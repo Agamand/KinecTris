@@ -54,9 +54,9 @@ class Grid():
 	def getColor(self,pos):
 	
 		if pos[0] >= CONST_WIDTH or pos[0] < 0:
-			return 0;
+			return 1;
 		if pos[1] >= CONST_HEIGHT or pos[1] < 0:
-			return 0;
+			return 1;
 		return self.cell[pos[0]][pos[1]]
 	def addToCell(self):
 		obj = self.activeObject
@@ -67,38 +67,41 @@ class Grid():
 		self.activeObject = None
 		print('cell'+str(self.cell))
 	def moveActiveObject(self):
+		if self.move([0,1]) == 0:
+			self.addToCell()
+	def move(self,to):
+	
 		if self.activeObject is None:
-			return
+			return 2
 		scene = bge.logic.getCurrentScene()
 		me = self.activeObject
 		pos = me.pos
 
 		if pos[1]+me.height >= CONST_HEIGHT:
-			self.addToCell()
 			print("ok fuck1")
-			return
+			return 0
 		print('obj pos : '+str(pos))
 
 		for x in range(0, me.width):
 			for y in range(0, me.height):
-				if me.cell[x][y] > 0 and self.getColor([pos[0]+1+x,pos[1]+1+y]) > 0:
-					self.addToCell()
+				if me.cell[x][y] > 0 and self.getColor([pos[0]+to[0]+x,pos[1]+to[1]+y]) > 0:
 					print("ok fuck")
-					return
+					return 0
 					
 
 		for x in range(0, me.width):
 			for y in range(0, me.height):
 				if me.cell[x][y] > 0 :
 					self.setColorAt([pos[0]+x,pos[1]+y],0)
-
-		me.pos[1] = me.pos[1] + 1
+		me.pos[0] = me.pos[0] + to[0]
+		me.pos[1] = me.pos[1] + to[1]
 		
 		pos = me.pos
 		for x in range(0, me.width):
 			for y in range(0, me.height):
 				if me.cell[x][y] > 0 :
 					self.setColorAt([pos[0]+x,pos[1]+y],me.color)
+		return 1
 					
 	def update(self):
 		self.moveActiveObject()
@@ -113,4 +116,15 @@ def main():
 def update():
 	Grid.getInstance().update()
 
+def move(v):
+	Grid.getInstance().move(v)
+
+def onLeft():
+	move([-1,0])
+def onRight():
+	move([1,0])
+
+
+def onBottom():
+	Grid.getInstance().move([0,1])
 
