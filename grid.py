@@ -65,6 +65,7 @@ class Grid():
 				if obj.cell[x][y] > 0 :
 					self.cell[x+obj.pos[0]][y+obj.pos[1]] = obj.color
 		self.activeObject = None
+		print('cell'+str(self.cell))
 	def moveActiveObject(self):
 		if self.activeObject is None:
 			return
@@ -72,7 +73,7 @@ class Grid():
 		me = self.activeObject
 		pos = me.pos
 
-		if pos[1]+me.height+1 >= CONST_HEIGHT:
+		if pos[1]+me.height >= CONST_HEIGHT:
 			self.addToCell()
 			print("ok fuck1")
 			return
@@ -80,7 +81,7 @@ class Grid():
 
 		for x in range(0, me.width):
 			for y in range(0, me.height):
-				if me.cell[x][y] > 0 and self.getColor([pos[0]+x,pos[1]+y]) > 0:
+				if me.cell[x][y] > 0 and self.getColor([pos[0]+1+x,pos[1]+1+y]) > 0:
 					self.addToCell()
 					print("ok fuck")
 					return
