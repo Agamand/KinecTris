@@ -82,12 +82,13 @@ class Grid():
 			return 0
 		print('obj pos : '+str(pos))
 
-		for x in range(0, me.width):
-			for y in range(0, me.height):
-				if me.cell[x][y] > 0 and self.getColor([pos[0]+to[0]+x,pos[1]+to[1]+y]) > 0:
-					print("ok fuck")
-					return 0
-					
+		#for x in range(0, me.width):
+			#for y in range(0, me.height):
+				#if me.cell[x][y] > 0 and self.getColor([pos[0]+to[0]+x,pos[1]+to[1]+y]) > 0:
+					#print("ok fuck")
+					#return 0
+		if TestPattern(me.cell,me.width,me.height,[pos[0]+to[0],pos[1]+to[1]]) < 1:
+			return 0			
 
 		for x in range(0, me.width):
 			for y in range(0, me.height):
@@ -102,11 +103,18 @@ class Grid():
 				if me.cell[x][y] > 0 :
 					self.setColorAt([pos[0]+x,pos[1]+y],me.color)
 		return 1
-					
+
 	def update(self):
 		self.moveActiveObject()
 		if self.activeObject is None:
 			self.setActiveObject(Block(1,[4,0]))
+
+	def TestPattern(self,pattern,h,w,pos):
+		for x in range(0, w):
+			for y in range(0, h):
+				if pattern[x][y] > 0 and self.getColor([pos[0]+x,pos[1]+y]) > 0:
+					return 0
+		return 1
 
 
 
