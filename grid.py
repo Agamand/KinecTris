@@ -7,6 +7,8 @@ from block import *
 CONST_HEIGHT=20
 CONST_WIDTH=10
 
+CONST_SIZE_PREVIEW = 4
+
 class Grid():
 
     def __init__(self):
@@ -46,7 +48,6 @@ class Grid():
             print('set grid')
             GameLogic.globalDict['grid'] = Grid()
         return GameLogic.globalDict['grid']
-
 
     def setActiveObject(self,obj):
         self.activeObject = obj
@@ -169,7 +170,22 @@ class Grid():
 
         self.setActiveObject(newBlock)
         self.nextBlock = Block(random.choice(getPattern()))
+        self.setNext();
 
+    def setNext(self):
+        scene = bge.logic.getCurrentScene()
+        colors = self.colors
+        me = self.nextBlock
+        for y in range(0, CONST_SIZE_PREVIEW):
+            for x in range(0, CONST_SIZE_PREVIEW):
+                print('p_'+str(y)+'_'+str(x))
+                if x < me.width and y < me.height:
+                    if me.cell[x][y] > 0 :
+                        setColor(scene.objects['p_'+str(y)+'_'+str(x)],colors[me.color])
+                    else:
+                        setColor(scene.objects['p_'+str(y)+'_'+str(x)],colors[0])
+                else: 
+                    setColor(scene.objects['p_'+str(y)+'_'+str(x)],colors[0])
 
     def removeFullLine(self):
         for y in range(0, CONST_HEIGHT):

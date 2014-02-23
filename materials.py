@@ -12,6 +12,7 @@ def makeMaterial(name, diffuse, specular, alpha):
     mat.ambient = 1
     return mat
 def setMaterial(ob, mat):
+    
     me = ob.data
     me.materials.append(mat)
 
