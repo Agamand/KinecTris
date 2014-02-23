@@ -1,8 +1,9 @@
 import bge
 import GameLogic
-
+import random
 from materials import *
 from block import *
+
 CONST_HEIGHT=20
 CONST_WIDTH=10
 
@@ -12,7 +13,7 @@ class Grid():
         self.activeObject = None
         self.colors = getColors()
         self.cell = []
-        self.b = 0
+        self.nextBlock = Block(random.choice(getPattern()))
         self.isRunning = True
         self.init_grid()
 
@@ -159,7 +160,7 @@ class Grid():
 
         self.removeFullLine()
 
-        newBlock = Block(getPattern()[self.b])
+        newBlock = self.nextBlock
 
         if self.testPattern(newBlock.cell,newBlock.width,newBlock.height,newBlock.pos) < 1:
             print('game end !')
@@ -167,9 +168,7 @@ class Grid():
             return
 
         self.setActiveObject(newBlock)
-        self.b = self.b + 1
-        if self.b > 6:
-            self.b = 0
+        self.nextBlock = Block(random.choice(getPattern()))
 
 
     def removeFullLine(self):
@@ -179,6 +178,7 @@ class Grid():
                 if self.cell[y][x] < 1 :
                     full = False
             if full:
+                print("remove "+str(y)+" line")
                 del self.cell[y]
                 self.cell.insert(0,[])
                 for x in range(0, CONST_WIDTH):
@@ -191,6 +191,7 @@ class Grid():
                     
 
     def testPattern(self,pattern,h,w,pos):
+        print('test at '+str(pos))
         for x in range(0, w):
             for y in range(0, h):
                 if pattern[x][y] > 0 and self.getColor([pos[0]+x,pos[1]+y]) > 0:
