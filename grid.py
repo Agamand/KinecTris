@@ -107,7 +107,7 @@ class Grid():
 	def update(self):
 		self.moveActiveObject()
 		if self.activeObject is None:
-			self.setActiveObject(Block(1,[4,0]))
+			self.setActiveObject(getBlocks()[0])
 
 	def TestPattern(self,pattern,h,w,pos):
 		for x in range(0, w):
@@ -119,7 +119,7 @@ class Grid():
 
 
 def main():
-	Grid.getInstance().setActiveObject(Block(1,[4,0]))
+	Grid.getInstance().setActiveObject(getBlocks()[0])
 
 def update():
 	Grid.getInstance().update()
