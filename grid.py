@@ -7,10 +7,12 @@ CONST_HEIGHT=20
 CONST_WIDTH=10
 
 class Grid():
+
 	def __init__(self):
 		self.activeObject = None
 		self.colors = getColors()
 		self.cell = []
+		self.b = 0
 		self.init_grid()
 
 	def init_grid(self):
@@ -87,7 +89,7 @@ class Grid():
 				#if me.cell[x][y] > 0 and self.getColor([pos[0]+to[0]+x,pos[1]+to[1]+y]) > 0:
 					#print("ok fuck")
 					#return 0
-		if TestPattern(me.cell,me.width,me.height,[pos[0]+to[0],pos[1]+to[1]]) < 1:
+		if self.testPattern(me.cell,me.width,me.height,[pos[0]+to[0],pos[1]+to[1]]) < 1:
 			return 0			
 
 		for x in range(0, me.width):
@@ -107,9 +109,47 @@ class Grid():
 	def update(self):
 		self.moveActiveObject()
 		if self.activeObject is None:
-			self.setActiveObject(getBlocks()[0])
+			self.spawn()
 
-	def TestPattern(self,pattern,h,w,pos):
+
+	def rotate(self,to):
+
+		if self.activeObject is None:
+			return 2
+
+		scene = bge.logic.getCurrentScene()
+		me = self.activeObject
+		pos = me.pos
+
+		next_pattern = me.getPattern(to)
+		print("next pattern"+str(next_pattern))
+		if self.testPattern(next_pattern[0],me.width,me.height,[pos[0],pos[1]]) < 1:
+			return 0
+
+		for x in range(0, me.width):
+			for y in range(0, me.height):
+				if me.cell[x][y] > 0 :
+					self.setColorAt([pos[0]+x,pos[1]+y],0)
+
+
+		me.setPattern(to)
+
+		for x in range(0, me.width):
+			for y in range(0, me.height):
+				if me.cell[x][y] > 0 :
+					self.setColorAt([pos[0]+x,pos[1]+y],me.color)
+
+
+	def spawn(self):
+		self.setActiveObject(Block(getPattern()[self.b]))
+		self.b = self.b + 1
+		if self.b > 6:
+			self.b = 0
+
+
+
+
+	def testPattern(self,pattern,h,w,pos):
 		for x in range(0, w):
 			for y in range(0, h):
 				if pattern[x][y] > 0 and self.getColor([pos[0]+x,pos[1]+y]) > 0:
@@ -119,7 +159,7 @@ class Grid():
 
 
 def main():
-	Grid.getInstance().setActiveObject(getBlocks()[0])
+	Grid.getInstance().spawn()
 
 def update():
 	Grid.getInstance().update()
@@ -132,6 +172,8 @@ def onLeft():
 def onRight():
 	move([1,0])
 
+def onUp():
+	Grid.getInstance().rotate(1)
 
 def onBottom():
 	Grid.getInstance().move([0,1])
