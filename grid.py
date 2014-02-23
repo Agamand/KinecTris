@@ -185,5 +185,5 @@ def onKey():
         move([-1,0])
     if keyboard.events[bge.events.DKEY] == JUST_ACTIVATED:
         move([1,0])
-    if keyboard.events[bge.events.SKEY] == JUST_ACTIVATED:
+    if keyboard.events[bge.events.SKEY]:
         Grid.getInstance().move([0,1])
