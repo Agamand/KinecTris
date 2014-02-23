@@ -23,14 +23,13 @@ def test():
 
 colors = []
 colors.append([0.0,0.0,0.0,0.0]);
-colors.append([1.0,0.0,0.0,1.0]);
+colors.append([1.0,1.0,0.0,1.0]);
 colors.append([0.0,0.0,1.0,1.0]);
 colors.append([0.0,1.0,0.0,1.0]);
-colors.append([1.0,1.0,0.0,1.0]);
+colors.append([1.0,0.0,0.0,1.0]);
+colors.append([0.5,0.0,1.0,1.0]);
+colors.append([1.0,0.5,0.0,1.0]);
 colors.append([0.0,1.0,1.0,1.0]);
-colors.append([1.0,0.0,1.0,1.0]);
-colors.append([0.0,0.0,0.0,1.0]);
-colors.append([1.0,1.0,1.0,0.0]);
 
 def getColors():
     return colors
