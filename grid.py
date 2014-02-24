@@ -6,7 +6,6 @@ from block import *
 
 CONST_HEIGHT=20
 CONST_WIDTH=10
-
 CONST_SIZE_PREVIEW = 4
 
 class Grid():
@@ -18,6 +17,8 @@ class Grid():
         self.nextBlock = Block(random.choice(getPattern()))
         self.isRunning = True
         self.init_grid()
+        self.scene = bge.logic.getCurrentScene()
+        self.objectList = self.scene.objects
 
 
     def init_grid(self):
@@ -42,12 +43,13 @@ class Grid():
         #self.cell[pos[0]][pos[1]] = i
 
     def getInstance():
-        if 'grid' in GameLogic.globalDict: 
-            print('grid is already set')
-        else:
-            print('set grid')
+        # if 'grid' in GameLogic.globalDict: 
+            # print('grid is already set')
+        if 'grid' not in GameLogic.globalDict:
+            # print('set grid')
             GameLogic.globalDict['grid'] = Grid()
         return GameLogic.globalDict['grid']
+
 
     def setActiveObject(self,obj):
         self.activeObject = obj
@@ -92,13 +94,9 @@ class Grid():
         #if pos[1]+me.height >= CONST_HEIGHT:
         #    print("ok fuck1")
         #    return 0
-        print('obj pos : '+str(pos))
+        # print('obj pos : '+str(pos))
 
-        #for x in range(0, me.width):
-            #for y in range(0, me.height):
-                #if me.cell[x][y] > 0 and self.getColor([pos[0]+to[0]+x,pos[1]+to[1]+y]) > 0:
-                    #print("ok fuck")
-                    #return 0
+        
         if self.testPattern(me.cell,me.width,me.height,[pos[0]+to[0],pos[1]+to[1]]) < 1:
             return 0            
 
@@ -119,10 +117,10 @@ class Grid():
     def update(self):
         if self.isRunning == False:
             return
-
         self.moveActiveObject()
         if self.activeObject is None:
             self.spawn()
+        # self.controllerUpdate()
 
 
     def rotate(self,to):
@@ -137,7 +135,7 @@ class Grid():
         pos = me.pos
 
         next_pattern = me.getPattern(to)
-        print("next pattern"+str(next_pattern))
+        # print("next pattern"+str(next_pattern))
         if self.testPattern(next_pattern[0],me.width,me.height,[pos[0],pos[1]]) < 1:
             return 0
 
@@ -170,7 +168,7 @@ class Grid():
 
         self.setActiveObject(newBlock)
         self.nextBlock = Block(random.choice(getPattern()))
-        self.setNext();
+        self.setNext()
 
     def setNext(self):
         scene = bge.logic.getCurrentScene()
@@ -199,6 +197,10 @@ class Grid():
                 self.cell.insert(0,[])
                 for x in range(0, CONST_WIDTH):
                     self.cell[0].append(0)
+                score = int(self.objectList["Score"].text)
+                score = score+1
+                print(score)
+                self.objectList["Score"].text = str(score)
 
         for y in range(0, CONST_HEIGHT):
             self.cell.append([])
@@ -207,12 +209,40 @@ class Grid():
                     
 
     def testPattern(self,pattern,h,w,pos):
-        print('test at '+str(pos))
+        # print('test at '+str(pos))
         for x in range(0, w):
             for y in range(0, h):
                 if pattern[x][y] > 0 and self.getColor([pos[0]+x,pos[1]+y]) > 0:
                     return 0
         return 1
+    
+    def controllerMoveUpdate(self):
+        rightHandPos = self.objectList['RightHand'].position
+        # print(rightHandPos)
+        if rightHandPos[0] < -5.5:
+            move([1,0])
+        leftHandPos = self.objectList['LeftHand'].position
+        # print(leftHandPos)
+        if leftHandPos[0] > 5.5:
+            move([-1,0])
+        leftFootPos = self.objectList['LeftFoot'].position
+        if leftFootPos[2] > -8:
+            Grid.getInstance().move([0,1])
+        print(leftFootPos)
+
+    def controllerRotationUpdate(self):
+        rightFootPos = self.objectList['RightFoot'].position
+        if rightFootPos[2] > -10:
+            Grid.getInstance().rotate(1)
+        # print(rightFootPos)
+
+def controllerMoveUpdate():
+    Grid.getInstance().controllerMoveUpdate()
+
+def controllerRotationUpdate():
+    Grid.getInstance().controllerRotationUpdate()
+        
+        
 def main():
     Grid.getInstance().spawn()
 
